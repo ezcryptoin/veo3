@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Prompt Google Veo v3</title>
+    <style>
+        body {
+            background-color: #111;
+            color: #eee;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2 {
+            color: #00ffe7;
+            text-align: center;
+        }
+        .header {
+            text-align: center;
+            color: #00ffe7;
+            font-size: 20px;
+            margin-bottom: 20px;
+            animation: blink 2s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .section {
+            background-color: #222;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #555;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+            color: #00ffe7;
+        }
+        input, textarea {
+            width: 100%;
+            background-color: #333;
+            color: #eee;
+            border: 1px solid #555;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        .example {
+            background-color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            color: #ccc;
+            font-family: monospace;
+        }
+        button {
+            background-color: #00ffe7;
+            color: #000;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #00bfa5;
+        }
+        #output {
+            background-color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header"><b>Karakter Konsisten Untuk VEO3 dibuat oleh Ide Creative Short</b></div>
+    <h1>Template Prompt Google Veo v3</h1>
+
+    <!-- Section Karakter -->
+    <div class="section">
+        <h2>Struktur Karakter</h2>
+        <div class="example">
+            [Gender], [Nationality], [Age], [Face Shape], [Skin Tone], [Eye Color], [Hair Color], [Hair Style], [Facial Features], [Body Type], [Clothing], [Accessories], [Pose/Expression], [Background], [Lighting], [Camera Angle]
+        </div>
+
+        <table id="character">
+            <tr><th>Komponen</th><th>Contoh</th><th>Input</th></tr>
+            <tr><td>Gender</td><td>Woman</td><td><input></td></tr>
+            <tr><td>Nationality</td><td>Indonesian-Korean</td><td><input></td></tr>
+            <tr><td>Age</td><td>Mid-20s</td><td><input></td></tr>
+            <tr><td>Face Shape</td><td>Oval</td><td><input></td></tr>
+            <tr><td>Skin Tone</td><td>Fair</td><td><input></td></tr>
+            <tr><td>Eye Color</td><td>Bright Blue</td><td><input></td></tr>
+            <tr><td>Hair Color</td><td>Light Brown</td><td><input></td></tr>
+            <tr><td>Hair Style</td><td>Short Wavy Bob</td><td><input></td></tr>
+            <tr><td>Facial Features</td><td>Sharp jawline, small nose</td><td><input></td></tr>
+            <tr><td>Body Type</td><td>Slim</td><td><input></td></tr>
+            <tr><td>Clothing</td><td>Yellow-brown batik dress</td><td><input></td></tr>
+            <tr><td>Accessories</td><td>None / Holding barbie doll</td><td><input></td></tr>
+            <tr><td>Pose/Expression</td><td>Crying, sitting cross-legged</td><td><input></td></tr>
+            <tr><td>Background</td><td>Bus stop, urban street</td><td><input></td></tr>
+            <tr><td>Lighting</td><td>Soft morning light</td><td><input></td></tr>
+            <tr><td>Camera Angle</td><td>Front medium shot</td><td><input></td></tr>
+        </table>
+    </div>
+
+    <!-- Section Cuaca -->
+    <div class="section">
+        <h2>Struktur Cuaca</h2>
+        <div class="example">
+            [Time of day], [Weather type], [Sky condition], [Lighting quality], [Atmospheric details]
+        </div>
+
+        <table id="weather">
+            <tr><th>Komponen</th><th>Contoh</th><th>Input</th></tr>
+            <tr><td>Time of day</td><td>Morning, Sunset</td><td><input></td></tr>
+            <tr><td>Weather type</td><td>Cloudy, Rainy</td><td><input></td></tr>
+            <tr><td>Sky condition</td><td>Grey cloudy sky</td><td><input></td></tr>
+            <tr><td>Lighting</td><td>Soft diffused light</td><td><input></td></tr>
+            <tr><td>Atmosphere</td><td>Mist, Raindrops</td><td><input></td></tr>
+        </table>
+    </div>
+
+    <!-- Section Aksi -->
+    <div class="section">
+        <h2>Struktur Aksi (Gerakan)</h2>
+        <div class="example">
+            [Subject], [Body movement/gesture], [Facial expression], [Interaction with objects/people], [Movement speed/intensity]
+        </div>
+
+        <table id="action">
+            <tr><th>Komponen</th><th>Contoh</th><th>Input</th></tr>
+            <tr><td>Body movement/gesture</td><td>Sitting, running, waving</td><td><input></td></tr>
+            <tr><td>Facial expression</td><td>Crying, smiling, angry</td><td><input></td></tr>
+            <tr><td>Interaction with objects</td><td>Hugging a doll, holding a wrench</td><td><input></td></tr>
+            <tr><td>Movement speed/intensity</td><td>Slowly, quickly, nervously</td><td><input></td></tr>
+        </table>
+    </div>
+
+    <!-- Tombol dan Output -->
+    <div class="section">
+        <button onclick="generatePrompt()">Generate Prompt</button>
+        <button onclick="copyPrompt()">Copy to Clipboard</button>
+
+        <h3>Output Prompt:</h3>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        function getInputFromTable(tableId) {
+            const table = document.getElementById(tableId);
+            const inputs = table.getElementsByTagName('input');
+            return Array.from(inputs).map(input => input.value.trim());
+        }
+
+        function generatePrompt() {
+            const character = getInputFromTable('character').filter(v => v).join(', ');
+            const weather = getInputFromTable('weather').filter(v => v).join(', ');
+            const action = getInputFromTable('action').filter(v => v).join(', ');
+
+            const output = 
+`Scene Description:
+${weather}.
+
+Character Description:
+${character}.
+
+Action:
+${action}.`;
+
+            document.getElementById('output').innerText = output;
+        }
+
+        function copyPrompt() {
+            const output = document.getElementById('output').innerText;
+            navigator.clipboard.writeText(output).then(() => {
+                alert('Prompt copied to clipboard!');
+            });
+        }
+    </script>
+
+</body>
+</html>

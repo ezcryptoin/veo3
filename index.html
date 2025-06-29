@@ -9,15 +9,47 @@ body {
     background-color: #111;
     color: white;
     font-family: sans-serif;
-    text-align: center;
-    padding: 20px;
+    margin: 0;
 }
 h1 {
     color: #00ffe7;
     animation: blink 2s infinite;
+    text-align: center;
 }
 @keyframes blink {
     50% { opacity: 0.6; }
+}
+
+.navbar {
+    background-color: #00ffe7;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+.navbar button {
+    background-color: black;
+    color: #00ffe7;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+.navbar button:hover {
+    background-color: #333;
+}
+
+.section {
+    display: none;
+    padding: 20px;
+}
+.section.active {
+    display: block;
 }
 
 button {
@@ -30,6 +62,7 @@ button {
     font-weight: bold;
     margin: 6px;
 }
+
 textarea {
     width: 90%;
     height: 80px;
@@ -39,12 +72,7 @@ textarea {
     background-color: #222;
     color: white;
 }
-.section {
-    background-color: #222;
-    padding: 15px;
-    border-radius: 10px;
-    margin: 15px 0;
-}
+
 #output, #randomOutput {
     background-color: #000;
     padding: 15px;
@@ -52,6 +80,27 @@ textarea {
     margin-top: 15px;
     white-space: pre-wrap;
 }
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.ripple {
+    position: absolute;
+    background: rgba(0,255,231,0.3);
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple .6s linear;
+    pointer-events: none;
+}
+@keyframes ripple {
+    to { transform: scale(4); opacity: 0; }
+}
+
 #preview {
     border: 2px dashed #00ffe7;
     min-height: 150px;
@@ -70,24 +119,6 @@ textarea {
     border-radius: 10px;
     cursor: grab;
 }
-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index: 9999;
-}
-.ripple {
-    position: absolute;
-    background: rgba(0,255,231,0.3);
-    border-radius: 50%;
-    transform: scale(0);
-    animation: ripple .6s linear;
-    pointer-events: none;
-}
-@keyframes ripple {
-    to { transform: scale(4); opacity: 0; }
-}
 </style>
 </head>
 <body>
@@ -96,57 +127,95 @@ canvas {
 
 <h1>Karakter Konsisten Untuk VEO3<br> Dibuat oleh Ide Creative Short</h1>
 
-<button onclick="addCharacter()">Tambah Karakter</button>
-
-<div id="characters"></div>
-
-<div class="section">
-    <h2>Cuaca, Aksi, Ekspresi, Kamera, Background</h2>
-    <textarea id="weather" placeholder="Cuaca..."></textarea><br>
-    <textarea id="action" placeholder="Aksi / Gerakan..."></textarea><br>
-    <textarea id="expression" placeholder="Ekspresi wajah..."></textarea><br>
-    <textarea id="camera" placeholder="Angle Kamera..."></textarea><br>
-    <textarea id="background" placeholder="Background..."></textarea>
+<!-- Navbar Menu -->
+<div class="navbar">
+    <button onclick="showSection('home')">Home</button>
+    <button onclick="showSection('builder')">Prompt Builder</button>
+    <button onclick="showSection('random')">Prompt Random</button>
+    <button onclick="showSection('preview')">Preview Posisi</button>
+    <button onclick="showSection('about')">Tentang</button>
 </div>
 
-<div class="section">
-    <h2>Dialog / Kata-kata</h2>
-    <textarea id="dialog" placeholder="Dialog karakter..."></textarea>
+<!-- Section Home -->
+<div id="home" class="section active">
+    <h2>Selamat Datang!</h2>
+    <p>Ini adalah alat Prompt Generator & Builder untuk Google VEO3.</p>
+    <p>Gunakan menu di atas untuk mulai membuat prompt secara manual atau otomatis random.</p>
 </div>
 
-<div class="section">
-    <h2>Preview Posisi Karakter (Drag & Drop)</h2>
-    <div id="preview"></div>
-    <button onclick="resetPosition()">Reset Posisi</button>
+    <!-- Section Prompt Builder -->
+<div id="builder" class="section">
+    <h2>Prompt Builder Manual</h2>
+
+    <button onclick="addCharacter()">➕ Tambah Karakter</button>
+    <div id="characters"></div>
+
+    <div class="section">
+        <h3>Cuaca, Aksi, Ekspresi, Kamera, Background</h3>
+        <textarea id="weather" placeholder="Cuaca..."></textarea><br>
+        <textarea id="action" placeholder="Aksi / Gerakan..."></textarea><br>
+        <textarea id="expression" placeholder="Ekspresi wajah..."></textarea><br>
+        <textarea id="camera" placeholder="Angle Kamera..."></textarea><br>
+        <textarea id="background" placeholder="Background..."></textarea>
+    </div>
+
+    <div class="section">
+        <h3>Dialog / Kata-kata</h3>
+        <textarea id="dialog" placeholder="Dialog karakter..."></textarea>
+    </div>
+
+    <div class="section">
+        <h3>🎯 Generate Prompt Manual</h3>
+        <button onclick="generatePrompt()">🚀 Generate Prompt</button>
+        <button onclick="copyPrompt()">📋 Copy to Clipboard</button>
+        <div id="output"></div>
+    </div>
 </div>
 
-<div class="section">
-    <h2>🎯 Generate Prompt Manual</h2>
-    <button onclick="generatePrompt()">Generate Prompt</button>
-    <button onclick="copyPrompt()">Copy to Clipboard</button>
-    <div id="output"></div>
-</div>
+<!-- Section Prompt Random -->
+<div id="random" class="section">
+    <h2>Prompt Random Otomatis</h2>
 
-<div class="section">
-    <h2>🎲 Generate Prompt Random</h2>
     <label>Gender:</label>
     <select id="genderSelect">
         <option value="male">Pria</option>
         <option value="female">Wanita</option>
     </select><br><br>
-    <button onclick="generateRandomPrompt()">Generate Random</button>
-    <button onclick="copyRandomPrompt()">Copy Random to Clipboard</button>
+
+    <button onclick="generateRandomPrompt()">🎲 Generate Random</button>
+    <button onclick="copyRandomPrompt()">📋 Copy Random to Clipboard</button>
     <div id="randomOutput"></div>
+</div>
+
+<!-- Section Preview Posisi -->
+<div id="preview" class="section">
+    <h2>Preview Posisi Karakter (Drag & Drop)</h2>
+    <div id="previewArea"></div>
+    <button onclick="resetPosition()">🔄 Reset Posisi</button>
+</div>
+
+<!-- Section Tentang -->
+<div id="about" class="section">
+    <h2>Tentang</h2>
+    <p>Website ini dibuat oleh <strong>Ide Creative Short</strong> sebagai alat pembantu membuat prompt untuk Google VEO3.</p>
+    <p>Fitur lengkap: Prompt Builder Manual, Prompt Random, Preview Posisi Drag & Drop, Copy Prompt, Popup TikTok, Redirect TikTok, dan Efek Visual (Cyberpunk + Ripple).</p>
 </div>
 
 <script>
 let characterCount = 0;
 let promptCount = 0;
 
+// Navigasi Menu
+function showSection(id) {
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+// Tambah Karakter
 function addCharacter() {
     characterCount++;
     const container = document.getElementById('characters');
-    const preview = document.getElementById('preview');
+    const preview = document.getElementById('previewArea');
 
     const div = document.createElement('div');
     div.classList.add('section');
@@ -169,7 +238,8 @@ function addCharacter() {
     preview.appendChild(box);
 }
 
-const preview = document.getElementById('preview');
+// Drag & Drop Preview
+const preview = document.getElementById('previewArea');
 preview.addEventListener('dragover', e => e.preventDefault());
 preview.addEventListener('drop', e => {
     e.preventDefault();
@@ -178,6 +248,7 @@ preview.addEventListener('drop', e => {
     preview.appendChild(draggable);
 });
 
+// Reset Posisi
 function resetPosition() {
     const boxes = Array.from(preview.querySelectorAll('.character-box'));
     boxes.sort((a, b) => {
@@ -188,6 +259,7 @@ function resetPosition() {
     boxes.forEach(box => preview.appendChild(box));
 }
 
+// Generate Prompt Manual
 function generatePrompt() {
     promptCount++;
     let characters = '';
@@ -195,6 +267,7 @@ function generatePrompt() {
         const desc = document.getElementById(`char${i}`).value.trim();
         if (desc) characters += `Karakter ${i}: ${desc}.\n`;
     }
+
     const result = `
 Scene:
 Background: ${document.getElementById('background').value.trim()}
@@ -217,11 +290,13 @@ ${document.getElementById('dialog').value.trim()}
     if (promptCount % 5 === 0) redirectToTikTok();
 }
 
+// Copy Prompt Manual
 function copyPrompt() {
     navigator.clipboard.writeText(document.getElementById('output').innerText);
     alert('Prompt copied!');
 }
 
+// Generate Prompt Random
 function generateRandomPrompt() {
     const gender = document.getElementById('genderSelect').value;
 
@@ -232,8 +307,8 @@ function generateRandomPrompt() {
     const actions = ['Walking', 'Sitting', 'Jumping', 'Waving', 'Running'];
     const expressions = ['Happy', 'Sad', 'Confused', 'Excited', 'Focused'];
     const cameras = ['Front shot', 'Side angle', 'Wide shot', 'Close-up'];
-    const maleChars = ['Tall man with black jacket', 'Young boy with glasses'];
-    const femaleChars = ['Woman with red dress', 'Girl with short hair'];
+    const maleChars = ['Tall man with black jacket', 'Young boy with glasses', 'Old man with hat'];
+    const femaleChars = ['Woman with red dress', 'Girl with short hair', 'Lady wearing jeans'];
 
     const char = gender === 'male' ? random(maleChars) : random(femaleChars);
 
@@ -257,40 +332,49 @@ Camera Angle: ${random(cameras)}
     if (promptCount % 5 === 0) redirectToTikTok();
 }
 
+// Copy Prompt Random
 function copyRandomPrompt() {
     navigator.clipboard.writeText(document.getElementById('randomOutput').innerText);
     alert('Random prompt copied!');
 }
 
+// Popup TikTok setiap 3x generate
 function openTikTokPopup() {
-    window.open('https://www.tiktok.com/@uideshortkreative', '_blank');
+    window.open('https://www.tiktok.com/@ideshortkreative', '_blank');
 }
 
+// Redirect TikTok setiap 5x generate
 function redirectToTikTok() {
     window.location.href = 'https://www.tiktok.com/@ideshortkreative';
 }
+</script>
 
-// Cursor Neon Line (Desktop)
+    <script>
+// ===== Kursor Neon Cyberpunk (Untuk PC/Desktop) =====
 const canvas = document.getElementById('cursor-canvas');
 const ctx = canvas.getContext('2d');
 let width = window.innerWidth;
 let height = window.innerHeight;
 canvas.width = width;
 canvas.height = height;
+
 window.addEventListener('resize', () => {
     width = window.innerWidth;
     height = window.innerHeight;
     canvas.width = width;
     canvas.height = height;
 });
+
 let mouse = { x: width / 2, y: height / 2 };
 let trail = [];
+
 window.addEventListener('mousemove', e => {
     mouse.x = e.clientX;
     mouse.y = e.clientY;
     trail.push({ x: mouse.x, y: mouse.y, alpha: 1 });
     if (trail.length > 50) trail.shift();
 });
+
 function drawTrail() {
     ctx.clearRect(0, 0, width, height);
     for (let i = 0; i < trail.length - 1; i++) {
@@ -311,12 +395,14 @@ function drawTrail() {
     }
     requestAnimationFrame(drawTrail);
 }
+
+// Aktifkan hanya jika perangkat punya pointer (bukan touchscreen)
 if (window.matchMedia("(pointer: fine)").matches) {
     drawTrail();
 }
 
-// Ripple Effect Mobile
-document.querySelectorAll('button, .section').forEach(el => {
+// ===== Ripple Effect Untuk Mobile =====
+document.querySelectorAll('button, .navbar button, .section').forEach(el => {
     el.addEventListener('click', function(e) {
         if (window.matchMedia("(pointer: coarse)").matches) {
             const circle = document.createElement('span');
@@ -333,6 +419,5 @@ document.querySelectorAll('button, .section').forEach(el => {
     });
 });
 </script>
-
 </body>
 </html>

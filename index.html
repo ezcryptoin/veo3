@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prompt VEO3 + Visual + Efek</title>
+<title>Prompt VEO3 - Ide Creative Short</title>
 <style>
     body {
         background-color: #111;
         color: #eee;
-        font-family: Arial;
+        font-family: Arial, sans-serif;
         margin: 20px;
     }
     h1, h2 {
@@ -48,7 +48,7 @@
         background-color: #333;
         color: #00ffe7;
     }
-    input, textarea {
+    input, textarea, select {
         width: 100%;
         background-color: #333;
         color: #eee;
@@ -71,7 +71,7 @@
     button:hover {
         background-color: #00bfa5;
     }
-    #output {
+    #output, #randomOutput {
         background-color: #333;
         padding: 10px;
         border-radius: 5px;
@@ -113,7 +113,7 @@
         }
     }
 
-    /* Cursor line neon for desktop */
+    /* Cursor neon line for desktop */
     #cursor-canvas {
         position: fixed;
         top: 0;
@@ -129,10 +129,12 @@
 
 <canvas id="cursor-canvas"></canvas>
 
-<div class="header"><b>Karakter Konsisten Untuk VEO3 dibuat oleh Ide Creative Short</b></div>
+<div class="header">
+    <b>Karakter Konsisten Untuk VEO3 dibuat oleh Ide Creative Short</b>
+</div>
 <h1>Prompt Google Veo v3 + Visual Preview + Efek</h1>
 
-<!-- Karakter -->
+    <!-- Karakter -->
 <div class="section">
     <h2>Karakter</h2>
     <div id="characters"></div>
@@ -177,7 +179,23 @@
     <button onclick="resetPosition()">Reset Posisi</button>
 </div>
 
-<!-- Tombol -->
+    <!-- Generate Prompt Random -->
+<div class="section">
+    <h2>🎲 Generate Prompt Instan (Random)</h2>
+    <label>Pilih Gender:</label>
+    <select id="genderSelect">
+        <option value="male">Pria</option>
+        <option value="female">Wanita</option>
+    </select>
+    <br><br>
+    <button onclick="generateRandomPrompt()">Generate Random Prompt</button>
+    <button onclick="copyRandomPrompt()">Copy Random Prompt to Clipboard</button>
+
+    <h3>Output Prompt Random:</h3>
+    <div id="randomOutput"></div>
+</div>
+
+<!-- Prompt Manual -->
 <div class="section">
     <button onclick="generatePrompt()">Generate Prompt</button>
     <button onclick="copyPrompt()">Copy to Clipboard</button>
@@ -186,7 +204,7 @@
     <div id="output"></div>
 </div>
 
-<script>
+    <script>
     let characterCount = 0;
 
     function addCharacter() {
@@ -200,7 +218,7 @@
             <h3>Karakter ${characterCount}</h3>
             <table id="character${characterCount}">
                 <tr><th>Komponen</th><th>Contoh</th><th>Input</th></tr>
-                <tr><td>Nama (Label)</td><td>Fauzi</td><td><input></td></tr>
+                <tr><td>Nama</td><td>Fauzi</td><td><input></td></tr>
                 <tr><td>Gender</td><td>Woman</td><td><input></td></tr>
                 <tr><td>Nationality</td><td>Indonesian-Korean</td><td><input></td></tr>
                 <tr><td>Age</td><td>Mid-20s</td><td><input></td></tr>
@@ -290,6 +308,64 @@ ${dialog}.`;
         });
     }
 
+    function generateRandomPrompt() {
+        const gender = document.getElementById('genderSelect').value;
+
+        const backgrounds = ['Bus stop', 'City street', 'Cafe', 'Park', 'Beach', 'Library', 'Market', 'Train station'];
+        const weathers = ['Sunny', 'Cloudy', 'Rainy', 'Foggy', 'Windy', 'Snowy'];
+        const skyConditions = ['Clear blue sky', 'Grey clouds', 'Colorful sunset', 'Overcast'];
+        const lightings = ['Soft morning light', 'Harsh midday sun', 'Golden hour glow', 'Neon night light'];
+        const atmospheres = ['Foggy mist', 'Raindrops', 'Dust particles', 'Clean crisp air'];
+
+        const maleFaces = ['Square', 'Oval', 'Round', 'Sharp jawline'];
+        const femaleFaces = ['Oval', 'Heart-shaped', 'Soft round', 'Defined cheekbones'];
+
+        const skinTones = ['Fair', 'Tan', 'Dark', 'Olive'];
+        const eyeColors = ['Brown', 'Blue', 'Green', 'Hazel', 'Grey'];
+        const hairColors = ['Black', 'Brown', 'Blonde', 'Red', 'Grey', 'Light Brown'];
+        const hairStylesMale = ['Short spiky', 'Buzz cut', 'Pompadour', 'Messy'];
+        const hairStylesFemale = ['Long wavy', 'Short bob', 'Braided', 'Curly ponytail'];
+
+        const clothingsMale = ['T-shirt and jeans', 'Formal suit', 'Leather jacket', 'Casual hoodie'];
+        const clothingsFemale = ['Batik dress', 'Casual blouse and skirt', 'Leather jacket', 'Floral dress'];
+
+        const accessories = ['Glasses', 'Watch', 'Backpack', 'Hat', 'Scarf', 'Headphones'];
+
+        const actions = ['Walking', 'Sitting', 'Waving', 'Talking on phone', 'Looking around', 'Typing on laptop'];
+        const expressions = ['Smiling', 'Confused', 'Focused', 'Excited', 'Crying', 'Angry'];
+        const angles = ['Front medium shot', 'Over the shoulder', 'Wide angle', 'Close-up portrait', 'Side view'];
+
+        const random = arr => arr[Math.floor(Math.random() * arr.length)];
+
+        const face = gender === 'male' ? random(maleFaces) : random(femaleFaces);
+        const hairStyle = gender === 'male' ? random(hairStylesMale) : random(hairStylesFemale);
+        const clothing = gender === 'male' ? random(clothingsMale) : random(clothingsFemale);
+
+        const prompt = `
+Scene:
+Background: ${random(backgrounds)}, Weather: ${random(weathers)}, Sky: ${random(skyConditions)}, Lighting: ${random(lightings)}, Atmosphere: ${random(atmospheres)}.
+
+Character:
+Gender: ${gender === 'male' ? 'Pria' : 'Wanita'}, Face: ${face}, Skin Tone: ${random(skinTones)}, Eye Color: ${random(eyeColors)}, Hair: ${hairStyle} (${random(hairColors)}), Clothing: ${clothing}, Accessories: ${random(accessories)}.
+
+Action:
+${random(actions)}, Expression: ${random(expressions)}, Camera Angle: ${random(angles)}.
+        `.trim();
+
+        document.getElementById('randomOutput').innerText = prompt;
+    }
+
+    function copyRandomPrompt() {
+        const output = document.getElementById('randomOutput').innerText;
+        if (output.trim() === '') {
+            alert('Belum ada prompt untuk dicopy!');
+            return;
+        }
+        navigator.clipboard.writeText(output).then(() => {
+            alert('Random prompt copied to clipboard!');
+        });
+    }
+
     // Cursor Neon Line (Desktop)
     const canvas = document.getElementById('cursor-canvas');
     const ctx = canvas.getContext('2d');
@@ -355,6 +431,5 @@ ${dialog}.`;
         });
     });
 </script>
-
 </body>
 </html>

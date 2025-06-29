@@ -5,431 +5,334 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Prompt VEO3 - Ide Creative Short</title>
 <style>
-    body {
-        background-color: #111;
-        color: #eee;
-        font-family: Arial, sans-serif;
-        margin: 20px;
-    }
-    h1, h2 {
-        color: #00ffe7;
-        text-align: center;
-    }
-    .header {
-        text-align: center;
-        color: #00ffe7;
-        font-size: 20px;
-        margin-bottom: 20px;
-        animation: blink 2s infinite;
-    }
-    @keyframes blink {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.6; }
-    }
-    .section {
-        background-color: #222;
-        padding: 15px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        position: relative;
-        overflow: hidden;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-    }
-    th, td {
-        border: 1px solid #555;
-        padding: 8px;
-        text-align: left;
-    }
-    th {
-        background-color: #333;
-        color: #00ffe7;
-    }
-    input, textarea, select {
-        width: 100%;
-        background-color: #333;
-        color: #eee;
-        border: 1px solid #555;
-        padding: 8px;
-        border-radius: 5px;
-    }
-    button {
-        background-color: #00ffe7;
-        color: #000;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        margin: 5px;
-        font-weight: bold;
-        position: relative;
-        overflow: hidden;
-    }
-    button:hover {
-        background-color: #00bfa5;
-    }
-    #output, #randomOutput {
-        background-color: #333;
-        padding: 10px;
-        border-radius: 5px;
-        white-space: pre-wrap;
-    }
-    #preview {
-        background-color: #222;
-        border-radius: 10px;
-        padding: 10px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        min-height: 150px;
-    }
-    .character-box {
-        background-color: #444;
-        border: 2px solid #00ffe7;
-        padding: 10px;
-        border-radius: 10px;
-        cursor: move;
-        width: 120px;
-        text-align: center;
-        user-select: none;
-    }
+body {
+    background-color: #111;
+    color: white;
+    font-family: sans-serif;
+    text-align: center;
+    padding: 20px;
+}
+h1 {
+    color: #00ffe7;
+    animation: blink 2s infinite;
+}
+@keyframes blink {
+    50% { opacity: 0.6; }
+}
 
-    /* Ripple effect for mobile */
-    .ripple {
-        position: absolute;
-        border-radius: 50%;
-        transform: scale(0);
-        animation: ripple-effect 0.6s linear;
-        background-color: rgba(0, 255, 231, 0.5);
-        pointer-events: none;
-    }
-    @keyframes ripple-effect {
-        to {
-            transform: scale(4);
-            opacity: 0;
-        }
-    }
-
-    /* Cursor neon line for desktop */
-    #cursor-canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 999;
-    }
+button {
+    background-color: #00ffe7;
+    border: none;
+    padding: 8px 18px;
+    color: black;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 6px;
+}
+textarea {
+    width: 90%;
+    height: 80px;
+    border-radius: 8px;
+    border: none;
+    padding: 10px;
+    background-color: #222;
+    color: white;
+}
+.section {
+    background-color: #222;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 15px 0;
+}
+#output, #randomOutput {
+    background-color: #000;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 15px;
+    white-space: pre-wrap;
+}
+#preview {
+    border: 2px dashed #00ffe7;
+    min-height: 150px;
+    margin-top: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+}
+.character-box {
+    background-color: #00ffe7;
+    color: black;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: grab;
+}
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+}
+.ripple {
+    position: absolute;
+    background: rgba(0,255,231,0.3);
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple .6s linear;
+    pointer-events: none;
+}
+@keyframes ripple {
+    to { transform: scale(4); opacity: 0; }
+}
 </style>
 </head>
 <body>
 
 <canvas id="cursor-canvas"></canvas>
 
-<div class="header">
-    <b>Karakter Konsisten Untuk VEO3 dibuat oleh Ide Creative Short</b>
-</div>
-<h1>Prompt Google Veo v3 + Visual Preview + Efek</h1>
+<h1>Karakter Konsisten Untuk VEO3<br> Dibuat oleh Ide Creative Short</h1>
 
-    <!-- Karakter -->
-<div class="section">
-    <h2>Karakter</h2>
-    <div id="characters"></div>
-    <button onclick="addCharacter()">Tambah Karakter</button>
-</div>
+<button onclick="addCharacter()">Tambah Karakter</button>
 
-<!-- Cuaca -->
+<div id="characters"></div>
+
 <div class="section">
-    <h2>Struktur Cuaca</h2>
-    <table id="weather">
-        <tr><th>Komponen</th><th>Contoh</th><th>Input</th></tr>
-        <tr><td>Time of day</td><td>Morning</td><td><input></td></tr>
-        <tr><td>Weather type</td><td>Cloudy</td><td><input></td></tr>
-        <tr><td>Sky condition</td><td>Grey cloudy sky</td><td><input></td></tr>
-        <tr><td>Lighting</td><td>Soft diffused light</td><td><input></td></tr>
-        <tr><td>Atmosphere</td><td>Mist, Raindrops</td><td><input></td></tr>
-    </table>
+    <h2>Cuaca, Aksi, Ekspresi, Kamera, Background</h2>
+    <textarea id="weather" placeholder="Cuaca..."></textarea><br>
+    <textarea id="action" placeholder="Aksi / Gerakan..."></textarea><br>
+    <textarea id="expression" placeholder="Ekspresi wajah..."></textarea><br>
+    <textarea id="camera" placeholder="Angle Kamera..."></textarea><br>
+    <textarea id="background" placeholder="Background..."></textarea>
 </div>
 
-<!-- Aksi -->
 <div class="section">
-    <h2>Struktur Aksi (Gerakan)</h2>
-    <table id="action">
-        <tr><th>Komponen</th><th>Contoh</th><th>Input</th></tr>
-        <tr><td>Body movement/gesture</td><td>Walking, waving</td><td><input></td></tr>
-        <tr><td>Facial expression</td><td>Confused, smiling</td><td><input></td></tr>
-        <tr><td>Interaction with objects</td><td>Looking at phone, holding bag</td><td><input></td></tr>
-        <tr><td>Movement speed/intensity</td><td>Slowly, quickly</td><td><input></td></tr>
-    </table>
+    <h2>Dialog / Kata-kata</h2>
+    <textarea id="dialog" placeholder="Dialog karakter..."></textarea>
 </div>
 
-<!-- Dialog -->
 <div class="section">
-    <h2>Dialog / Percakapan</h2>
-    <textarea id="dialog" rows="4" placeholder="Masukkan dialog antar karakter..."></textarea>
-</div>
-
-<!-- Preview Layout -->
-<div class="section">
-    <h2>Preview Layout Posisi Karakter (Drag & Drop)</h2>
+    <h2>Preview Posisi Karakter (Drag & Drop)</h2>
     <div id="preview"></div>
     <button onclick="resetPosition()">Reset Posisi</button>
 </div>
 
-    <!-- Generate Prompt Random -->
 <div class="section">
-    <h2>🎲 Generate Prompt Instan (Random)</h2>
-    <label>Pilih Gender:</label>
-    <select id="genderSelect">
-        <option value="male">Pria</option>
-        <option value="female">Wanita</option>
-    </select>
-    <br><br>
-    <button onclick="generateRandomPrompt()">Generate Random Prompt</button>
-    <button onclick="copyRandomPrompt()">Copy Random Prompt to Clipboard</button>
-
-    <h3>Output Prompt Random:</h3>
-    <div id="randomOutput"></div>
-</div>
-
-<!-- Prompt Manual -->
-<div class="section">
+    <h2>🎯 Generate Prompt Manual</h2>
     <button onclick="generatePrompt()">Generate Prompt</button>
     <button onclick="copyPrompt()">Copy to Clipboard</button>
-
-    <h3>Output Prompt:</h3>
     <div id="output"></div>
 </div>
 
-    <script>
-    let characterCount = 0;
+<div class="section">
+    <h2>🎲 Generate Prompt Random</h2>
+    <label>Gender:</label>
+    <select id="genderSelect">
+        <option value="male">Pria</option>
+        <option value="female">Wanita</option>
+    </select><br><br>
+    <button onclick="generateRandomPrompt()">Generate Random</button>
+    <button onclick="copyRandomPrompt()">Copy Random to Clipboard</button>
+    <div id="randomOutput"></div>
+</div>
 
-    function addCharacter() {
-        characterCount++;
-        const container = document.getElementById('characters');
-        const preview = document.getElementById('preview');
+<script>
+let characterCount = 0;
+let promptCount = 0;
 
-        const div = document.createElement('div');
-        div.classList.add('section');
-        div.innerHTML = `
-            <h3>Karakter ${characterCount}</h3>
-            <table id="character${characterCount}">
-                <tr><th>Komponen</th><th>Contoh</th><th>Input</th></tr>
-                <tr><td>Nama</td><td>Fauzi</td><td><input></td></tr>
-                <tr><td>Gender</td><td>Woman</td><td><input></td></tr>
-                <tr><td>Nationality</td><td>Indonesian-Korean</td><td><input></td></tr>
-                <tr><td>Age</td><td>Mid-20s</td><td><input></td></tr>
-                <tr><td>Face Shape</td><td>Oval</td><td><input></td></tr>
-                <tr><td>Skin Tone</td><td>Fair</td><td><input></td></tr>
-                <tr><td>Eye Color</td><td>Bright Blue</td><td><input></td></tr>
-                <tr><td>Hair Color</td><td>Light Brown</td><td><input></td></tr>
-                <tr><td>Hair Style</td><td>Short Wavy Bob</td><td><input></td></tr>
-                <tr><td>Facial Features</td><td>Sharp jawline</td><td><input></td></tr>
-                <tr><td>Body Type</td><td>Slim</td><td><input></td></tr>
-                <tr><td>Clothing</td><td>Yellow batik dress</td><td><input></td></tr>
-                <tr><td>Accessories</td><td>Holding barbie doll</td><td><input></td></tr>
-                <tr><td>Pose/Expression</td><td>Crying</td><td><input></td></tr>
-                <tr><td>Background</td><td>Bus stop</td><td><input></td></tr>
-                <tr><td>Lighting</td><td>Soft morning light</td><td><input></td></tr>
-                <tr><td>Camera Angle</td><td>Front medium shot</td><td><input></td></tr>
-            </table>`;
-        container.appendChild(div);
-
-        const box = document.createElement('div');
-        box.className = 'character-box';
-        box.id = `charBox${characterCount}`;
-        box.innerText = `Karakter ${characterCount}`;
-        box.draggable = true;
-
-        box.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('text/plain', box.id);
-        });
-
-        preview.appendChild(box);
-    }
-
+function addCharacter() {
+    characterCount++;
+    const container = document.getElementById('characters');
     const preview = document.getElementById('preview');
-    preview.addEventListener('dragover', e => e.preventDefault());
-    preview.addEventListener('drop', e => {
-        e.preventDefault();
-        const id = e.dataTransfer.getData('text');
-        const draggable = document.getElementById(id);
-        preview.appendChild(draggable);
+
+    const div = document.createElement('div');
+    div.classList.add('section');
+    div.innerHTML = `
+        <h3>Karakter ${characterCount}</h3>
+        <textarea id="char${characterCount}" placeholder="Deskripsi Karakter..."></textarea>
+    `;
+    container.appendChild(div);
+
+    const box = document.createElement('div');
+    box.className = 'character-box';
+    box.id = `charBox${characterCount}`;
+    box.innerText = `Karakter ${characterCount}`;
+    box.draggable = true;
+
+    box.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', box.id);
     });
 
-    function resetPosition() {
-        const preview = document.getElementById('preview');
-        const boxes = Array.from(preview.querySelectorAll('.character-box'));
-        boxes.sort((a, b) => {
-            const numA = parseInt(a.id.replace('charBox', ''));
-            const numB = parseInt(b.id.replace('charBox', ''));
-            return numA - numB;
-        });
-        boxes.forEach(box => preview.appendChild(box));
+    preview.appendChild(box);
+}
+
+const preview = document.getElementById('preview');
+preview.addEventListener('dragover', e => e.preventDefault());
+preview.addEventListener('drop', e => {
+    e.preventDefault();
+    const id = e.dataTransfer.getData('text');
+    const draggable = document.getElementById(id);
+    preview.appendChild(draggable);
+});
+
+function resetPosition() {
+    const boxes = Array.from(preview.querySelectorAll('.character-box'));
+    boxes.sort((a, b) => {
+        const numA = parseInt(a.id.replace('charBox', ''));
+        const numB = parseInt(b.id.replace('charBox', ''));
+        return numA - numB;
+    });
+    boxes.forEach(box => preview.appendChild(box));
+}
+
+function generatePrompt() {
+    promptCount++;
+    let characters = '';
+    for (let i = 1; i <= characterCount; i++) {
+        const desc = document.getElementById(`char${i}`).value.trim();
+        if (desc) characters += `Karakter ${i}: ${desc}.\n`;
     }
+    const result = `
+Scene:
+Background: ${document.getElementById('background').value.trim()}
+Weather: ${document.getElementById('weather').value.trim()}
 
-    function getInputFromTable(tableId) {
-        const table = document.getElementById(tableId);
-        const inputs = table.getElementsByTagName('input');
-        return Array.from(inputs).map(input => input.value.trim());
-    }
+Characters:
+${characters}
 
-    function generatePrompt() {
-        const weather = getInputFromTable('weather').filter(v => v).join(', ');
-        const action = getInputFromTable('action').filter(v => v).join(', ');
-        const dialog = document.getElementById('dialog').value.trim();
-
-        let characterDescriptions = '';
-        for (let i = 1; i <= characterCount; i++) {
-            const desc = getInputFromTable(`character${i}`).filter(v => v).join(', ');
-            characterDescriptions += `Character ${i} Description:\n${desc}.\n\n`;
-        }
-
-        const output =
-`Scene Description:
-${weather}.
-
-${characterDescriptions}Action:
-${action}.
+Action: ${document.getElementById('action').value.trim()}
+Expression: ${document.getElementById('expression').value.trim()}
+Camera Angle: ${document.getElementById('camera').value.trim()}
 
 Dialog:
-${dialog}.`;
+${document.getElementById('dialog').value.trim()}
+    `.trim();
 
-        document.getElementById('output').innerText = output;
-    }
+    document.getElementById('output').innerText = result;
 
-    function copyPrompt() {
-        const output = document.getElementById('output').innerText;
-        navigator.clipboard.writeText(output).then(() => {
-            alert('Prompt copied to clipboard!');
-        });
-    }
+    if (promptCount % 3 === 0) openTikTokPopup();
+    if (promptCount % 5 === 0) redirectToTikTok();
+}
 
-    function generateRandomPrompt() {
-        const gender = document.getElementById('genderSelect').value;
+function copyPrompt() {
+    navigator.clipboard.writeText(document.getElementById('output').innerText);
+    alert('Prompt copied!');
+}
 
-        const backgrounds = ['Bus stop', 'City street', 'Cafe', 'Park', 'Beach', 'Library', 'Market', 'Train station'];
-        const weathers = ['Sunny', 'Cloudy', 'Rainy', 'Foggy', 'Windy', 'Snowy'];
-        const skyConditions = ['Clear blue sky', 'Grey clouds', 'Colorful sunset', 'Overcast'];
-        const lightings = ['Soft morning light', 'Harsh midday sun', 'Golden hour glow', 'Neon night light'];
-        const atmospheres = ['Foggy mist', 'Raindrops', 'Dust particles', 'Clean crisp air'];
+function generateRandomPrompt() {
+    const gender = document.getElementById('genderSelect').value;
 
-        const maleFaces = ['Square', 'Oval', 'Round', 'Sharp jawline'];
-        const femaleFaces = ['Oval', 'Heart-shaped', 'Soft round', 'Defined cheekbones'];
+    const random = arr => arr[Math.floor(Math.random() * arr.length)];
 
-        const skinTones = ['Fair', 'Tan', 'Dark', 'Olive'];
-        const eyeColors = ['Brown', 'Blue', 'Green', 'Hazel', 'Grey'];
-        const hairColors = ['Black', 'Brown', 'Blonde', 'Red', 'Grey', 'Light Brown'];
-        const hairStylesMale = ['Short spiky', 'Buzz cut', 'Pompadour', 'Messy'];
-        const hairStylesFemale = ['Long wavy', 'Short bob', 'Braided', 'Curly ponytail'];
+    const backgrounds = ['City street', 'Cafe', 'Park', 'Beach', 'Market'];
+    const weathers = ['Sunny', 'Cloudy', 'Rainy', 'Foggy', 'Windy'];
+    const actions = ['Walking', 'Sitting', 'Jumping', 'Waving', 'Running'];
+    const expressions = ['Happy', 'Sad', 'Confused', 'Excited', 'Focused'];
+    const cameras = ['Front shot', 'Side angle', 'Wide shot', 'Close-up'];
+    const maleChars = ['Tall man with black jacket', 'Young boy with glasses'];
+    const femaleChars = ['Woman with red dress', 'Girl with short hair'];
 
-        const clothingsMale = ['T-shirt and jeans', 'Formal suit', 'Leather jacket', 'Casual hoodie'];
-        const clothingsFemale = ['Batik dress', 'Casual blouse and skirt', 'Leather jacket', 'Floral dress'];
+    const char = gender === 'male' ? random(maleChars) : random(femaleChars);
 
-        const accessories = ['Glasses', 'Watch', 'Backpack', 'Hat', 'Scarf', 'Headphones'];
-
-        const actions = ['Walking', 'Sitting', 'Waving', 'Talking on phone', 'Looking around', 'Typing on laptop'];
-        const expressions = ['Smiling', 'Confused', 'Focused', 'Excited', 'Crying', 'Angry'];
-        const angles = ['Front medium shot', 'Over the shoulder', 'Wide angle', 'Close-up portrait', 'Side view'];
-
-        const random = arr => arr[Math.floor(Math.random() * arr.length)];
-
-        const face = gender === 'male' ? random(maleFaces) : random(femaleFaces);
-        const hairStyle = gender === 'male' ? random(hairStylesMale) : random(hairStylesFemale);
-        const clothing = gender === 'male' ? random(clothingsMale) : random(clothingsFemale);
-
-        const prompt = `
+    const result = `
 Scene:
-Background: ${random(backgrounds)}, Weather: ${random(weathers)}, Sky: ${random(skyConditions)}, Lighting: ${random(lightings)}, Atmosphere: ${random(atmospheres)}.
+Background: ${random(backgrounds)}
+Weather: ${random(weathers)}
 
-Character:
-Gender: ${gender === 'male' ? 'Pria' : 'Wanita'}, Face: ${face}, Skin Tone: ${random(skinTones)}, Eye Color: ${random(eyeColors)}, Hair: ${hairStyle} (${random(hairColors)}), Clothing: ${clothing}, Accessories: ${random(accessories)}.
+Characters:
+${char}
 
-Action:
-${random(actions)}, Expression: ${random(expressions)}, Camera Angle: ${random(angles)}.
-        `.trim();
+Action: ${random(actions)}
+Expression: ${random(expressions)}
+Camera Angle: ${random(cameras)}
+    `.trim();
 
-        document.getElementById('randomOutput').innerText = prompt;
-    }
+    document.getElementById('randomOutput').innerText = result;
 
-    function copyRandomPrompt() {
-        const output = document.getElementById('randomOutput').innerText;
-        if (output.trim() === '') {
-            alert('Belum ada prompt untuk dicopy!');
-            return;
-        }
-        navigator.clipboard.writeText(output).then(() => {
-            alert('Random prompt copied to clipboard!');
-        });
-    }
+    promptCount++;
+    if (promptCount % 3 === 0) openTikTokPopup();
+    if (promptCount % 5 === 0) redirectToTikTok();
+}
 
-    // Cursor Neon Line (Desktop)
-    const canvas = document.getElementById('cursor-canvas');
-    const ctx = canvas.getContext('2d');
-    let width = window.innerWidth;
-    let height = window.innerHeight;
+function copyRandomPrompt() {
+    navigator.clipboard.writeText(document.getElementById('randomOutput').innerText);
+    alert('Random prompt copied!');
+}
+
+function openTikTokPopup() {
+    window.open('https://www.tiktok.com/@uideshortkreative', '_blank');
+}
+
+function redirectToTikTok() {
+    window.location.href = 'https://www.tiktok.com/@ideshortkreative';
+}
+
+// Cursor Neon Line (Desktop)
+const canvas = document.getElementById('cursor-canvas');
+const ctx = canvas.getContext('2d');
+let width = window.innerWidth;
+let height = window.innerHeight;
+canvas.width = width;
+canvas.height = height;
+window.addEventListener('resize', () => {
+    width = window.innerWidth;
+    height = window.innerHeight;
     canvas.width = width;
     canvas.height = height;
-    window.addEventListener('resize', () => {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
-    });
+});
+let mouse = { x: width / 2, y: height / 2 };
+let trail = [];
+window.addEventListener('mousemove', e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    trail.push({ x: mouse.x, y: mouse.y, alpha: 1 });
+    if (trail.length > 50) trail.shift();
+});
+function drawTrail() {
+    ctx.clearRect(0, 0, width, height);
+    for (let i = 0; i < trail.length - 1; i++) {
+        const p1 = trail[i];
+        const p2 = trail[i + 1];
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        const gradient = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
+        gradient.addColorStop(0, `rgba(0, 255, 231, ${p1.alpha})`);
+        gradient.addColorStop(1, `rgba(0, 255, 231, ${p2.alpha})`);
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#00ffe7';
+        ctx.stroke();
+        p1.alpha *= 0.95;
+    }
+    requestAnimationFrame(drawTrail);
+}
+if (window.matchMedia("(pointer: fine)").matches) {
+    drawTrail();
+}
 
-    let mouse = { x: width / 2, y: height / 2 };
-    let trail = [];
-    window.addEventListener('mousemove', e => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-        trail.push({ x: mouse.x, y: mouse.y, alpha: 1 });
-        if (trail.length > 50) trail.shift();
-    });
+// Ripple Effect Mobile
+document.querySelectorAll('button, .section').forEach(el => {
+    el.addEventListener('click', function(e) {
+        if (window.matchMedia("(pointer: coarse)").matches) {
+            const circle = document.createElement('span');
+            circle.classList.add('ripple');
+            const rect = el.getBoundingClientRect();
+            circle.style.left = `${e.clientX - rect.left}px`;
+            circle.style.top = `${e.clientY - rect.top}px`;
+            const maxDim = Math.max(rect.width, rect.height);
+            circle.style.width = circle.style.height = `${maxDim * 2}px`;
 
-    function drawTrail() {
-        ctx.clearRect(0, 0, width, height);
-        for (let i = 0; i < trail.length - 1; i++) {
-            const p1 = trail[i];
-            const p2 = trail[i + 1];
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            const gradient = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
-            gradient.addColorStop(0, `rgba(0, 255, 231, ${p1.alpha})`);
-            gradient.addColorStop(1, `rgba(0, 255, 231, ${p2.alpha})`);
-            ctx.strokeStyle = gradient;
-            ctx.lineWidth = 2;
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = '#00ffe7';
-            ctx.stroke();
-            p1.alpha *= 0.95;
+            el.appendChild(circle);
+            setTimeout(() => circle.remove(), 600);
         }
-        requestAnimationFrame(drawTrail);
-    }
-    if (window.matchMedia("(pointer: fine)").matches) {
-        drawTrail();
-    }
-
-    // Ripple Effect Mobile
-    document.querySelectorAll('button, .section').forEach(el => {
-        el.addEventListener('click', function(e) {
-            if (window.matchMedia("(pointer: coarse)").matches) {
-                const circle = document.createElement('span');
-                circle.classList.add('ripple');
-                const rect = el.getBoundingClientRect();
-                circle.style.left = `${e.clientX - rect.left}px`;
-                circle.style.top = `${e.clientY - rect.top}px`;
-                const maxDim = Math.max(rect.width, rect.height);
-                circle.style.width = circle.style.height = `${maxDim * 2}px`;
-
-                el.appendChild(circle);
-                setTimeout(() => circle.remove(), 600);
-            }
-        });
     });
+});
 </script>
+
 </body>
 </html>
